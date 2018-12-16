@@ -20,21 +20,21 @@ class TranslationsRepositoryMock: TranslationsRepository {
     func fetchTranslations(acceptLanguage: String, completion: @escaping ((DataResponse<TranslationsResponse>) -> Void)) {
         let error = NSError(domain: "", code: 0, userInfo: nil)
         let result: Result = translationsResponse != nil ? .success(translationsResponse!) : .failure(error)
-        let response = DataResponse(request: nil, response: nil, data: nil, result: result)
+        let response = DataResponse(request: nil, response: nil, data: nil, metrics: nil, serializationDuration: 0, result: result)
         completion(response)
     }
 
     func fetchAvailableLanguages(completion: @escaping ((DataResponse<[Language]>) -> Void)) {
         let error = NSError(domain: "", code: 0, userInfo: nil)
         let result: Result = availableLanguages != nil ? .success(availableLanguages!) : .failure(error)
-        let response = DataResponse(request: nil, response: nil, data: nil, result: result)
+        let response = DataResponse(request: nil, response: nil, data: nil, metrics: nil, serializationDuration: 0, result: result)
         completion(response)
     }
 
     func fetchCurrentLanguage(acceptLanguage: String, completion: @escaping ((DataResponse<Language>) -> Void)) {
         let error = NSError(domain: "", code: 0, userInfo: nil)
         let result: Result = currentLanguage != nil ? .success(currentLanguage!) : .failure(error)
-        let response = DataResponse(request: nil, response: nil, data: nil, result: result)
+        let response = DataResponse(request: nil, response: nil, data: nil, metrics: nil, serializationDuration: 0, result: result)
         completion(response)
     }
 

@@ -18,7 +18,7 @@ final class ConnectionManager {
     let defaultUnwrapper: Parser.Unwrapper = { dict, _ in dict["data"] }
     let passthroughUnwrapper: Parser.Unwrapper = { dict, _ in return dict }
 
-    let manager: SessionManager
+    let manager: Session
     let configuration: APIConfiguration
 
     var defaultHeaders: [String : String] {
@@ -29,10 +29,10 @@ final class ConnectionManager {
     }
 
     init(configuration: APIConfiguration) {
-        let sessionConfiguration = SessionManager.default.session.configuration
+        let sessionConfiguration = Session.default.session.configuration
         sessionConfiguration.timeoutIntervalForRequest = 20.0
 
-        self.manager = SessionManager(configuration: sessionConfiguration)
+        self.manager = Session(configuration: sessionConfiguration)
         self.configuration = configuration
     }
 }
@@ -41,7 +41,7 @@ extension ConnectionManager: AppOpenRepository {
     func postAppOpen(oldVersion: String = VersionUtilities.previousAppVersion,
                      currentVersion: String = VersionUtilities.currentAppVersion,
                      acceptLanguage: String? = nil, completion: @escaping Completion<Any>) {
-        var params: [String : Any] = [
+        var params: Parameters = [
             "version"           : currentVersion,
             "guid"              : Configuration.guid,
             "platform"          : "ios",
@@ -53,15 +53,15 @@ extension ConnectionManager: AppOpenRepository {
             params["version"] = overriddenVersion
         }
 
-        var headers = defaultHeaders
+        var headers: [String: String] = defaultHeaders
         if let acceptLanguage = acceptLanguage {
             headers["Accept-Language"] = acceptLanguage
         }
 
         let url = baseURL + "open" + (configuration.isFlat ? "?flat=true" : "")
 
-        manager
-            .request(url, method: .post, parameters: params, headers: headers)
+        AF
+            .request(url, method: .post, parameters: params, headers: HTTPHeaders(headers))
             .responseJSON(completionHandler: completion)
     }
 }
@@ -69,7 +69,7 @@ extension ConnectionManager: AppOpenRepository {
 extension ConnectionManager: TranslationsRepository {
     func fetchTranslations(acceptLanguage: String,
                            completion: @escaping Completion<TranslationsResponse>) {
-        let params: [String : Any] = [
+        let params: Parameters = [
             "guid"              : Configuration.guid,
             "last_updated"      : ConnectionManager.lastUpdatedString
         ]
@@ -79,8 +79,8 @@ extension ConnectionManager: TranslationsRepository {
         var headers = defaultHeaders
         headers["Accept-Language"] = acceptLanguage
 
-        manager
-            .request(url, method: .get, parameters:params, headers: headers)
+        AF
+            .request(url, method: .get, parameters:params, headers: HTTPHeaders(headers))
             .responseSerializable(completion, unwrapper: passthroughUnwrapper)
     }
 
@@ -96,8 +96,8 @@ extension ConnectionManager: TranslationsRepository {
         var headers = defaultHeaders
         headers["Accept-Language"] = acceptLanguage
 
-        manager
-            .request(url, method: .get, parameters: params, headers: headers)
+        AF
+            .request(url, method: .get, parameters: params, headers: HTTPHeaders(headers))
             .responseSerializable(completion, unwrapper: defaultUnwrapper)
     }
 
@@ -108,8 +108,8 @@ extension ConnectionManager: TranslationsRepository {
 
         let url = baseURL + "translate/mobile/languages"
 
-        manager
-            .request(url, method: .get, parameters:params, headers: defaultHeaders)
+        AF
+            .request(url, method: .get, parameters:params, headers: HTTPHeaders(defaultHeaders))
             .responseSerializable(completion, unwrapper: defaultUnwrapper)
     }
 
@@ -134,8 +134,8 @@ extension ConnectionManager: UpdatesRepository {
             ]
 
         let url = baseURL + "notify/updates"
-        manager
-            .request(url, method: .get, parameters:params, headers: defaultHeaders)
+        AF
+            .request(url, method: .get, parameters:params, headers: HTTPHeaders(defaultHeaders))
             .responseSerializable(completion, unwrapper: defaultUnwrapper)
     }
 }
@@ -150,7 +150,7 @@ extension ConnectionManager: VersionsRepository {
         ]
 
         let url = baseURL + "notify/updates/views"
-        manager.request(url, method: .post, parameters:params, headers: defaultHeaders)
+        AF.request(url, method: .post, parameters:params, headers: HTTPHeaders(defaultHeaders))
     }
 
     func markMessageAsRead(_ id: String) {
@@ -160,7 +160,7 @@ extension ConnectionManager: VersionsRepository {
         ]
 
         let url = baseURL + "notify/messages/views"
-        manager.request(url, method: .post, parameters:params, headers: defaultHeaders)
+        AF.request(url, method: .post, parameters:params, headers: HTTPHeaders(defaultHeaders))
     }
 
     #if os(iOS) || os(tvOS)
@@ -172,7 +172,7 @@ extension ConnectionManager: VersionsRepository {
         ]
 
         let url = baseURL + "notify/rate_reminder/views"
-        manager.request(url, method: .post, parameters:params, headers: defaultHeaders)
+        AF.request(url, method: .post, parameters:params, headers: HTTPHeaders(defaultHeaders))
     }
     #endif
 }
@@ -181,38 +181,38 @@ extension ConnectionManager: VersionsRepository {
 
 extension ConnectionManager: GeographyRepository {
     func fetchContinents(completion: @escaping Completion<[Continent]>) {
-        manager
-            .request(baseURL + "geographic/continents", headers: defaultHeaders)
+        AF
+            .request(baseURL + "geographic/continents", headers: HTTPHeaders(defaultHeaders))
             .responseSerializable(completion, unwrapper: defaultUnwrapper)
     }
     
     func fetchLanguages(completion: @escaping Completion<[Language]>) {
-        manager
-            .request(baseURL + "geographic/languages", headers: defaultHeaders)
+        AF
+            .request(baseURL + "geographic/languages", headers: HTTPHeaders(defaultHeaders))
             .responseSerializable(completion, unwrapper: defaultUnwrapper)
     }
     
     func fetchTimeZones(completion: @escaping Completion<[Timezone]>) {
-        manager
-            .request(baseURL + "geographic/time_zones", headers: defaultHeaders)
+        AF
+            .request(baseURL + "geographic/time_zones", headers: HTTPHeaders(defaultHeaders))
             .responseSerializable(completion, unwrapper: defaultUnwrapper)
     }
     
     func fetchTimeZone(lat: Double, lng: Double, completion: @escaping Completion<Timezone>) {
-        manager
-            .request(baseURL + "geographic/time_zones/by_lat_lng?lat_lng=\(String(lat)),\(String(lng))", headers: defaultHeaders)
+        AF
+            .request(baseURL + "geographic/time_zones/by_lat_lng?lat_lng=\(String(lat)),\(String(lng))", headers: HTTPHeaders(defaultHeaders))
             .responseSerializable(completion, unwrapper: defaultUnwrapper)
     }
     
     func fetchIPDetails(completion: @escaping Completion<IPAddress>) {
-        manager
-            .request(baseURL + "geographic/ip-address", headers: defaultHeaders)
+        AF
+            .request(baseURL + "geographic/ip-address", headers: HTTPHeaders(defaultHeaders))
             .responseSerializable(completion, unwrapper: defaultUnwrapper)
     }
     
     func fetchCountries(completion:  @escaping Completion<[Country]>) {
-        manager
-            .request(baseURL + "geographic/countries", headers: defaultHeaders)
+        AF
+            .request(baseURL + "geographic/countries", headers: HTTPHeaders(defaultHeaders))
             .responseSerializable(completion, unwrapper: defaultUnwrapper)
     }
 }
@@ -221,8 +221,8 @@ extension ConnectionManager: GeographyRepository {
 
 extension ConnectionManager: ValidationRepository {
     func validateEmail(_ email: String, completion:  @escaping Completion<Validation>) {
-        manager
-            .request(baseURL + "validator/email?email=\(email)", headers: defaultHeaders)
+        AF
+            .request(baseURL + "validator/email?email=\(email)", headers: HTTPHeaders(defaultHeaders))
             .responseSerializable(completion, unwrapper: defaultUnwrapper)
     }
 }
@@ -237,8 +237,8 @@ extension ConnectionManager: ContentRepository {
     
     func fetchStaticResponse<T:Swift.Codable>(atSlug slug: String, completion: @escaping ((Result<T>) -> Void)) {
       
-        manager
-            .request(baseURL + "content/responses/\(slug)", headers: defaultHeaders)
+        AF
+            .request(baseURL + "content/responses/\(slug)", headers: HTTPHeaders(defaultHeaders))
             .validate()
             .responseData { (response) in
                 switch response.result {
@@ -261,15 +261,15 @@ extension ConnectionManager: ContentRepository {
     }
     
     func fetchContent(_ id: Int, completion: @escaping Completion<Any>) {
-        manager
-            .request(baseURL + "content/responses/\(id)", headers: defaultHeaders)
+        AF
+            .request(baseURL + "content/responses/\(id)", headers: HTTPHeaders(defaultHeaders))
             .validate()
             .responseJSON(completionHandler: completion)
     }
     
     func fetchContent(_ slug: String, completion: @escaping Completion<Any>) {
-        manager
-            .request(baseURL + "content/responses/\(slug)", headers: defaultHeaders)
+        AF
+            .request(baseURL + "content/responses/\(slug)", headers: HTTPHeaders(defaultHeaders))
             .validate()
             .responseJSON(completionHandler: completion)
     }
