@@ -461,16 +461,16 @@ public class TranslationManager {
         // this will match to Danish instead of English. Eventually this should be refactored to support
         // region-specific translations, but that is very much an edge case.
         
-//        logger.logVerbose("Finding language for matching preferred languages: \(languages).")
-//
-//        // Find matching language and region
-//        for lan in languages {
-//            // Try matching on both language and region
-//            if let dictionary = dictionary.value(forKey: lan) as? NSDictionary {
-//                logger.logVerbose("Found matching language for language with region: " + lan)
-//                return dictionary
-//            }
-//        }
+        logger.logVerbose("Finding language for matching preferred languages: \(languages).")
+
+        // Find matching language and region
+        for lan in languages {
+            // Try matching on both language and region
+            if let dictionary = dictionary.value(forKey: lan) as? NSDictionary {
+                logger.logVerbose("Found matching language for language with region: " + lan)
+                return dictionary
+            }
+        }
         
         let shortLanguages = languages.map({ $0.substring(to: 2) })
         logger.logVerbose("Finding language for matching preferred  short languages: \(languages).")
