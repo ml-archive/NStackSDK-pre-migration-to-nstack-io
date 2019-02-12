@@ -464,13 +464,13 @@ public class TranslationManager {
         logger.logVerbose("Finding language for matching preferred languages: \(languages).")
 
         // Find matching language and region
-//        for lan in languages {
-//            // Try matching on both language and region
-//            if let dictionary = dictionary.value(forKey: lan) as? NSDictionary {
-//                logger.logVerbose("Found matching language for language with region: " + lan)
-//                return dictionary
-//            }
-//        }
+        for lan in languages {
+            // Try matching on both language and region
+            if let dictionary = dictionary.value(forKey: lan) as? NSDictionary {
+                logger.logVerbose("Found matching language for language with region: " + lan)
+                return dictionary
+            }
+        }
         
         let shortLanguages = languages.map({ $0.substring(to: 2) })
         logger.logVerbose("Finding language for matching preferred  short languages: \(languages).")
