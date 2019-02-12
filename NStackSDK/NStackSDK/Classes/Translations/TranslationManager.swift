@@ -454,6 +454,7 @@ public class TranslationManager {
             return [:]
         }
         let languages = [language]
+        logger.logVerbose("languages: \(languages)")
         
         // This is removed as it causes bugs when you don't have an exact locale match to your
         // phone's language, but do match a secondary language. For example, if your phone is
