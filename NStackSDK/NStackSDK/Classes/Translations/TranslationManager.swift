@@ -432,6 +432,7 @@ public class TranslationManager {
     /// - Returns: A translations set as a dictionary.
     func extractLanguageDictionary(fromDictionary dictionary: NSDictionary) -> NSDictionary {
         logger.logVerbose("Extracting language dictionary.")
+        logger.logVerbose("Extracting language dictionary: \(dictionary)")
         var languageDictionary: NSDictionary? = nil
         
         // First try overriden language
