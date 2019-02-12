@@ -432,18 +432,18 @@ public class TranslationManager {
     /// - Returns: A translations set as a dictionary.
     func extractLanguageDictionary(fromDictionary dictionary: NSDictionary) -> NSDictionary {
         logger.logVerbose("Extracting language dictionary.")
-        logger.logVerbose("Extracting language dictionary: \(dictionary)")
+        
         var languageDictionary: NSDictionary? = nil
         
         // First try overriden language
-//        if let languageOverride = languageOverride {
-//            logger.logVerbose("Language override enabled, trying it first.")
-//            languageDictionary = translationsMatching(language: languageOverride,
-//                                                      inDictionary: dictionary)
-//            if let languageDictionary = languageDictionary {
-//                return languageDictionary
-//            }
-//        }
+        if let languageOverride = languageOverride {
+            logger.logVerbose("Language override enabled, trying it first.")
+            languageDictionary = translationsMatching(language: languageOverride,
+                                                      inDictionary: dictionary)
+            if let languageDictionary = languageDictionary {
+                return languageDictionary
+            }
+        }
 
         // This is removed so that only the device's current language is used. This is a request
         // from the consultant teams and matches what Android does. NStack will determine the best
@@ -455,9 +455,6 @@ public class TranslationManager {
             return [:]
         }
         let languages = [language]
-        logger.logVerbose("languages: \(languages)")
-        logger.logVerbose("NStack locale: \(Locale.current.languageCode)")
-        logger.logVerbose("NStack preferred: \(Locale.preferredLanguages)")
         
         // This is removed as it causes bugs when you don't have an exact locale match to your
         // phone's language, but do match a secondary language. For example, if your phone is
@@ -468,13 +465,13 @@ public class TranslationManager {
         logger.logVerbose("Finding language for matching preferred languages: \(languages).")
 
         // Find matching language and region
-        for lan in languages {
-            // Try matching on both language and region
-            if let dictionary = dictionary.value(forKey: lan) as? NSDictionary {
-                logger.logVerbose("Found matching language for language with region: " + lan)
-                return dictionary
-            }
-        }
+//        for lan in languages {
+//            // Try matching on both language and region
+//            if let dictionary = dictionary.value(forKey: lan) as? NSDictionary {
+//                logger.logVerbose("Found matching language for language with region: " + lan)
+//                return dictionary
+//            }
+//        }
         
         let shortLanguages = languages.map({ $0.substring(to: 2) })
         logger.logVerbose("Finding language for matching preferred  short languages: \(languages).")
