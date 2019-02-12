@@ -435,14 +435,14 @@ public class TranslationManager {
         var languageDictionary: NSDictionary? = nil
         
         // First try overriden language
-        if let languageOverride = languageOverride {
-            logger.logVerbose("Language override enabled, trying it first.")
-            languageDictionary = translationsMatching(language: languageOverride,
-                                                      inDictionary: dictionary)
-            if let languageDictionary = languageDictionary {
-                return languageDictionary
-            }
-        }
+//        if let languageOverride = languageOverride {
+//            logger.logVerbose("Language override enabled, trying it first.")
+//            languageDictionary = translationsMatching(language: languageOverride,
+//                                                      inDictionary: dictionary)
+//            if let languageDictionary = languageDictionary {
+//                return languageDictionary
+//            }
+//        }
 
         // This is removed so that only the device's current language is used. This is a request
         // from the consultant teams and matches what Android does. NStack will determine the best
@@ -467,13 +467,13 @@ public class TranslationManager {
         logger.logVerbose("Finding language for matching preferred languages: \(languages).")
 
         // Find matching language and region
-//        for lan in languages {
-//            // Try matching on both language and region
-//            if let dictionary = dictionary.value(forKey: lan) as? NSDictionary {
-//                logger.logVerbose("Found matching language for language with region: " + lan)
-//                return dictionary
-//            }
-//        }
+        for lan in languages {
+            // Try matching on both language and region
+            if let dictionary = dictionary.value(forKey: lan) as? NSDictionary {
+                logger.logVerbose("Found matching language for language with region: " + lan)
+                return dictionary
+            }
+        }
         
         let shortLanguages = languages.map({ $0.substring(to: 2) })
         logger.logVerbose("Finding language for matching preferred  short languages: \(languages).")
