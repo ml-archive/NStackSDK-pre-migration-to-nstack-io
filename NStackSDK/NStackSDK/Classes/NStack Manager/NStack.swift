@@ -160,34 +160,15 @@ public class NStack {
 
         // FIXME: Refactor
 
-        connectionManager.postAppOpen(completion: { response in
+        connectionManager.newPostAppOpen(completion: { response in
             switch response.result {
-            case .success(let JSONdata):
-                guard let dictionary = JSONdata as? NSDictionary else {
-                    self.logger.log("Failure: couldn't parse response. Response data: \(JSONdata)",
-                        level: .error)
-                    completion?(.updateFailed(reason: "Couldn't parse response dictionary."))
-                    return
-                }
-
-                let wrapper = AppOpenResponse(dictionary: dictionary)
-
-
-                defer {
-                    completion?(nil)
-                }
-
-                guard let appOpenResponseData = wrapper.data else { return }
-
-                // Update translations
-//                if let translations = appOpenResponseData.translate, translations.count > 0 {
-//                    self.translationsManager?.set(translationsDictionary: translations)
-//                }
-
+            case .success(let appOpenResponse):
+                guard let appOpenResponseData = appOpenResponse.data else { return }
+                self.translationsManager?.localizations = appOpenResponseData.localize
                 #if os(iOS) || os(tvOS)
-
+                
                 if !self.alertManager.alreadyShowingAlert {
-
+                    
                     if let newVersion = appOpenResponseData.update?.newerVersion {
                         self.alertManager.showUpdateAlert(newVersion: newVersion)
                     } else if let changelog = appOpenResponseData.update?.newInThisVersion {
@@ -197,13 +178,13 @@ public class NStack {
                     } else if let rateReminder = appOpenResponseData.rateReminder {
                         self.alertManager.showRateReminder(rateReminder)
                     }
-
+                    
                     VersionUtilities.previousAppVersion = VersionUtilities.currentAppVersion
                 }
                 #endif
-
+                
                 self.connectionManager.setLastUpdated()
-
+                
             case let .failure(error):
                 self.logger.log("Failure: \(response.response?.description ?? "unknown error")", level: .error)
                 completion?(.updateFailed(reason: error.localizedDescription))
@@ -211,7 +192,7 @@ public class NStack {
         })
 
         // Update translations if needed
-        translationsManager?.updateTranslations()
+        //translationsManager?.updateTranslations()
     }
 }
 

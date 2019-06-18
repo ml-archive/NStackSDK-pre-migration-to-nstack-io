@@ -24,6 +24,13 @@ class TranslationsRepositoryMock: TranslationsRepository {
         let response = DataResponse(request: nil, response: nil, data: nil, result: result)
         completion(response)
     }
+    
+    func fetchLocalizeTranslations(localize: Localize, acceptLanguage: String?, completion: @escaping Completion<TranslationsResponse>) {
+        let error = NSError(domain: "", code: 0, userInfo: nil)
+        let result: Result = translationsResponse != nil ? .success(translationsResponse!) : .failure(error)
+        let response = DataResponse(request: nil, response: nil, data: nil, result: result)
+        completion(response)
+    }
 
     func fetchAvailableLanguages(completion: @escaping ((DataResponse<[Language]>) -> Void)) {
         let error = NSError(domain: "", code: 0, userInfo: nil)

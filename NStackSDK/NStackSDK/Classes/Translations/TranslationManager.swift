@@ -76,6 +76,22 @@ public class TranslationManager {
         }
     }
     
+    public var localizations: [Localize]? {
+        get {
+            return store.serializableForKey(Constants.CacheKeys.localizations)
+        }
+        set {
+            if let newValue = newValue {
+                logger.logVerbose("Localizations set")
+                store.setSerializable(newValue, forKey: Constants.CacheKeys.localizations)
+            } else {
+                logger.logVerbose("Localizations deleted.")
+                store.deleteSerializableForKey(Constants.CacheKeys.localizations)
+            }
+            handleLocalizationsUpdated(newValue ?? [])
+        }
+    }
+    
     // MARK: - Lifecycle -
     
     /// Instantiates and sets the type of the translations object and the repository from which
@@ -158,6 +174,50 @@ public class TranslationManager {
                                      "Error: ", error.localizedDescription)
                 completion?(.updateFailed(reason: error.localizedDescription))
             }
+        }
+    }
+    
+    public func updateLocaliztionTranslations(localiztion: Localize,
+                                              _ completion: ((_ error: NStackError.Translations?) -> Void)? = nil) {
+        logger.logVerbose("Starting translations update asynchronously.")
+        repository.fetchLocalizeTranslations(localize: localiztion,
+                                             acceptLanguage: nil
+        ) { response in
+            switch response.result {
+            case .success(let translationsData):
+                self.logger.logVerbose("New translations downloaded.")
+                
+                var languageChanged = false
+                if self.lastAcceptHeader != self.acceptLanguage {
+                    self.logger.logVerbose("Language changed from last time, clearing first.")
+                    self.clearTranslations(includingPersisted: true)
+                    languageChanged = true
+                }
+                
+                self.lastAcceptHeader = self.acceptLanguage
+                self.set(response: translationsData)
+                
+                completion?(nil)
+                
+                if languageChanged {
+                    self.logger.logVerbose("Running language changed action.")
+                    self.languageChangedAction?()
+                }
+                
+            case .failure(let error):
+                self.logger.logError("Error downloading translations data.\n",
+                                     "Response: ", response.response ?? "No response", "\n",
+                                     "Data: ", response.data ?? "No data", "\n",
+                                     "Error: ", error.localizedDescription)
+                completion?(.updateFailed(reason: error.localizedDescription))
+            }
+        }
+    }
+    
+    public func handleLocalizationsUpdated(_ localizations: [Localize]) {
+        let localizationsThatRequireUpdate = localizations.filter({ $0.shouldUpdate == false })
+        for localization in localizationsThatRequireUpdate {
+            updateLocaliztionTranslations(localiztion: localization)
         }
     }
     

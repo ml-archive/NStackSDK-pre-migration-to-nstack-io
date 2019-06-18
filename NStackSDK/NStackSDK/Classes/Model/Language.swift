@@ -15,6 +15,8 @@ public struct Language {
     public var locale = ""
     public var direction = ""
     public var acceptLanguage = "" // <-Accept-Language
+    public var isDefault = false
+    public var isBestFit = false
 }
 
 extension Language: Serializable {
@@ -24,8 +26,10 @@ extension Language: Serializable {
         locale         <== (self, dictionary, "locale")
         direction      <== (self, dictionary, "direction")
         acceptLanguage <== (self, dictionary, "Accept-Language")
+        isDefault      <== (self, dictionary, "is_default")
+        isBestFit      <== (self, dictionary, "is_best_fit")
     }
-
+    
     public func encodableRepresentation() -> NSCoding {
         let dict = NSMutableDictionary()
         (dict, "id")              <== id
@@ -33,6 +37,8 @@ extension Language: Serializable {
         (dict, "locale")          <== locale
         (dict, "direction")       <== direction
         (dict, "Accept-Language") <== acceptLanguage
+        (dict, "is_default")      <== isDefault
+        (dict, "is_best_fit")     <== isBestFit
         return dict
     }
 }

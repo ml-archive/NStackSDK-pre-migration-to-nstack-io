@@ -101,6 +101,7 @@
 		01FC66791DFAD905001682AA /* BundleMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01FC66781DFAD905001682AA /* BundleMock.swift */; };
 		01FC667B1DFADC35001682AA /* InvalidTranslations.json in Resources */ = {isa = PBXBuildFile; fileRef = 01FC667A1DFADC35001682AA /* InvalidTranslations.json */; };
 		01FC667D1DFADEC5001682AA /* WrongTypeTranslations.json in Resources */ = {isa = PBXBuildFile; fileRef = 01FC667C1DFADEC5001682AA /* WrongTypeTranslations.json */; };
+		23A4291822B7DE9500D09EA1 /* Localize.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23A4291722B7DE9500D09EA1 /* Localize.swift */; };
 		2729E8491B9ED06600286B12 /* TranslationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2729E8481B9ED06600286B12 /* TranslationManager.swift */; };
 		2729E84B1B9ED47400286B12 /* Translatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2729E84A1B9ED47400286B12 /* Translatable.swift */; };
 		3027B2C11BBAE34D00C2F4FB /* ConnectionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3027B2C01BBAE34D00C2F4FB /* ConnectionManager.swift */; };
@@ -270,6 +271,7 @@
 		01FC66781DFAD905001682AA /* BundleMock.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BundleMock.swift; sourceTree = "<group>"; };
 		01FC667A1DFADC35001682AA /* InvalidTranslations.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = InvalidTranslations.json; sourceTree = "<group>"; };
 		01FC667C1DFADEC5001682AA /* WrongTypeTranslations.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = WrongTypeTranslations.json; sourceTree = "<group>"; };
+		23A4291722B7DE9500D09EA1 /* Localize.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Localize.swift; path = Classes/Model/Localize.swift; sourceTree = "<group>"; };
 		2729E8481B9ED06600286B12 /* TranslationManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TranslationManager.swift; sourceTree = "<group>"; };
 		2729E84A1B9ED47400286B12 /* Translatable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Translatable.swift; sourceTree = "<group>"; };
 		3027B2C01BBAE34D00C2F4FB /* ConnectionManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ConnectionManager.swift; path = "../NStack Manager/ConnectionManager.swift"; sourceTree = "<group>"; };
@@ -486,6 +488,7 @@
 				33E222ED1FA8C5280013CCC3 /* Validation.swift */,
 				33E223021FA9F4EA0013CCC3 /* IPAddress.swift */,
 				33E2230A1FA9F5010013CCC3 /* Continent.swift */,
+				23A4291722B7DE9500D09EA1 /* Localize.swift */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -1037,6 +1040,7 @@
 				01814A2C1D6209F40053E804 /* TranslationsResponse.swift in Sources */,
 				01F4C6691DFF14690050D0F1 /* LogLevel.swift in Sources */,
 				304C42821BA0745500AE3D6F /* AppOpenData.swift in Sources */,
+				23A4291822B7DE9500D09EA1 /* Localize.swift in Sources */,
 				0184A2C51D60BF6B00E63E01 /* NStackError.swift in Sources */,
 				30B0CAB11BD7C24E005463AA /* Message.swift in Sources */,
 				839497BF1DC21DBF007FE281 /* Country.swift in Sources */,

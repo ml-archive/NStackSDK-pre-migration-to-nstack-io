@@ -19,5 +19,6 @@ enum Constants {
         static let languanges           = "LanguangesKey"
         static let timezones            = "TimezonesKey"
         static let languageOverride     = "LanguageOverride"
+        static let localizations        = "LocalizationsKey"
     }
 }

@@ -13,22 +13,26 @@ import Cashier
 
 #if canImport(UIKit)
 import UIKit
+
+#warning("N-Meta not currently working with Mac & Watch, just going to use `ios` for all")
 #if os(watchOS)
-let deviceString = "Watch"
+let platformString = "watchos"
 #else
-let deviceString = "\(UIDevice.current.systemVersion);\(UIDevice.current.model)"
+let platformString = "ios"
 #endif
 #elseif canImport(AppKit)
 import AppKit
-let deviceString = "Mac"
+let platformString = "macos"
 #else
-let deviceString = ""
+let platformString = ""
 #endif
+let deviceString = "\(platformString);staging;\(Bundle.main.infoDictionary?["CFBundleShortVersionString"] ?? "");\(UIDevice.current.systemVersion);\(UIDevice.current.model)"
 
 
 // FIXME: Figure out how to do accept language header properly
 final class ConnectionManager {
     let baseURL = "https://nstack.io/api/v1/"
+    let baseURLv2 = "https://nstack.io/api/v2/"
     let defaultUnwrapper: Parser.Unwrapper = { dict, _ in dict["data"] }
     let passthroughUnwrapper: Parser.Unwrapper = { dict, _ in return dict }
 
@@ -73,11 +77,38 @@ extension ConnectionManager: AppOpenRepository {
             headers["Accept-Language"] = acceptLanguage
         }
 
-        let url = baseURL + "open" + (configuration.isFlat ? "?flat=true" : "")
+        let url = baseURLv2 + "open" + (configuration.isFlat ? "?flat=true" : "")
 
         manager
             .request(url, method: .post, parameters: params, headers: headers)
             .responseJSON(completionHandler: completion)
+    }
+    
+    func newPostAppOpen(oldVersion: String = VersionUtilities.previousAppVersion,
+                        currentVersion: String = VersionUtilities.currentAppVersion,
+                        acceptLanguage: String? = nil, completion: @escaping Completion<AppOpenResponse>) {
+        var params: [String: Any] = [
+            "version": currentVersion,
+            "guid": Configuration.guid,
+            "platform": "ios",
+            "last_updated": ConnectionManager.lastUpdatedString,
+            "old_version": oldVersion
+        ]
+        
+        if let overriddenVersion = VersionUtilities.versionOverride {
+            params["version"] = overriddenVersion
+        }
+        
+        var headers = defaultHeaders
+        if let acceptLanguage = acceptLanguage {
+            headers["Accept-Language"] = acceptLanguage
+        }
+        
+        let url = baseURLv2 + "open" + (configuration.isFlat ? "?flat=true" : "")
+        
+        manager
+            .request(url, method: .post, parameters: params, headers: headers)
+            .responseSerializable(completion, unwrapper: passthroughUnwrapper)
     }
 }
 
@@ -96,6 +127,21 @@ extension ConnectionManager: TranslationsRepository {
 
         manager
             .request(url, method: .get, parameters:params, headers: headers)
+            .responseSerializable(completion, unwrapper: passthroughUnwrapper)
+    }
+    
+    func fetchLocalizeTranslations(localize: Localize,
+                                   acceptLanguage: String? = nil,
+                                   completion: @escaping Completion<TranslationsResponse>) {
+        
+        var headers = defaultHeaders
+        if let acceptLanguage = acceptLanguage {
+            headers["Accept-Language"] = acceptLanguage
+        }
+        
+        let url = localize.url
+        manager
+            .request(url, method: .get, parameters: nil, headers: headers)
             .responseSerializable(completion, unwrapper: passthroughUnwrapper)
     }
 

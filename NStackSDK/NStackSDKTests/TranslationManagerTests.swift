@@ -19,7 +19,8 @@ class TranslationManagerTests: XCTestCase {
     var logger: LoggerType!
 
     let mockLanguage = Language(id: 0, name: "Danish", locale: "da-DK",
-                                direction: "lrm", acceptLanguage: "da-DK")
+                                direction: "lrm", acceptLanguage: "da-DK",
+                                isDefault: false, isBestFit: false)
 
     var mockTranslations: TranslationsResponse {
         return TranslationsResponse(translations:
@@ -187,9 +188,11 @@ class TranslationManagerTests: XCTestCase {
     func testFetchAvailableLanguagesSuccess() {
         repositoryMock.availableLanguages = [
             Language(id: 0, name: "English", locale: "en-GB",
-                     direction: "LRM", acceptLanguage: "en-GB"),
+                     direction: "LRM", acceptLanguage: "en-GB",
+                     isDefault: false, isBestFit: false),
             Language(id: 1, name: "Danish", locale: "da-DK",
-                     direction: "LRM", acceptLanguage: "da-DK")
+                     direction: "LRM", acceptLanguage: "da-DK",
+                     isDefault: false, isBestFit: false)
         ]
         
         let exp = expectation(description: "Fetch available should return two languages.")
@@ -420,7 +423,8 @@ class TranslationManagerTests: XCTestCase {
     func testExtractWithSameRegionsWithCurrentLanguage() {
         repositoryMock.preferredLanguages = ["da-DK", "en-DK"]
         manager.languageOverride = Language(id: 0, name: "English", locale: "en-UK",
-                                           direction: "lrm", acceptLanguage: "en-UK")
+                                            direction: "lrm", acceptLanguage: "en-UK",
+                                            isDefault: false, isBestFit: false)
         let lang: NSDictionary = ["en-AU" : ["correct" : "no"],
                                   "en-UK" : ["correct" : "yes"]]
         let dict = manager.extractLanguageDictionary(fromDictionary: lang)
