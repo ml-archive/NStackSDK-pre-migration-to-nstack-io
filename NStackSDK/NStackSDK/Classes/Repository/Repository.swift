@@ -8,6 +8,7 @@
 
 import Foundation
 import Alamofire
+import TranslationManager
 
 typealias Completion<T> = ((DataResponse<T>) -> Void)
 

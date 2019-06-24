@@ -1,3 +1,4 @@
 github "Alamofire/Alamofire" "4.8.1"
 github "nodes-ios/Cashier" "1.3"
 github "nodes-ios/Serpent" "1.2.0"
+github "nodes-ios/TranslationManager" "b154cdc533c26b9596e8c758b1041cce9ee74c5a"
