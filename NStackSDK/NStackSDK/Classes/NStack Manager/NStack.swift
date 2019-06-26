@@ -10,22 +10,26 @@ import Foundation
 import Cashier
 import Serpent
 import Alamofire
+import TranslationManager
 
 public class NStack {
     
-    public enum Result<T> {
+    public enum NStackResult<T> {
         case success(data: T)
         case failure(Error)
     }
 
     /// The singleton object which should be used to interact with NStack API.
     public static let sharedInstance = NStack()
+    
+    /// User defaults used to store basic information and settings.
+    fileprivate let userDefaults: UserDefaults = .standard
 
     /// The configuration object the shared instance have been initialized with.
     public fileprivate(set) var configuration: Configuration!
 
     /// The manager responsible for fetching, updating and persisting translations.
-    public fileprivate(set) var translationsManager: TranslationManager?
+    public fileprivate(set) var translationsManager: TranslatableManager<TestTranslatable, Language, Localization>?
 
     #if os(iOS) || os(tvOS)
     /// The manager responsible for handling and showing version alerts and messages.
@@ -40,7 +44,8 @@ public class NStack {
     public var logLevel: LogLevel = .error {
         didSet {
             logger.logLevel = logLevel
-            translationsManager?.logger.logLevel = logLevel
+            #warning("Add Logger to translation manager")
+            //translationsManager?.logger.logLevel = logLevel
         }
     }
 
@@ -112,20 +117,24 @@ public class NStack {
 
         // Setup translations
         if let translationsClass = configuration.translationsClass {
-            translationsManager = TranslationManager(translationsType: translationsClass,
-                                                     repository: connectionManager,
-                                                     logger: ConsoleLogger())
+            translationsManager = TranslatableManager(repository: self.connectionManager)
 
             // Delete translations if new version
             if VersionUtilities.isVersion(VersionUtilities.currentAppVersion,
                                           greaterThanVersion: VersionUtilities.previousAppVersion) {
-                translationsManager?.clearTranslations(includingPersisted: true)
+                do {
+                    try translationsManager?.clearTranslations(includingPersisted: true)
+                }
+                catch {
+                    #warning("TODO: handle error")
+                }
             }
 
-            // Set callback 
-            translationsManager?.languageChangedAction = {
-                self.languageChangedHandler?()
-            }
+            // Set callback
+            #warning("Add language Changed handler?")
+//            translationsManager?.languageChangedAction = {
+//                self.languageChangedHandler?()
+//            }
         }
 
         #if os(iOS) || os(tvOS)
@@ -164,7 +173,7 @@ public class NStack {
             switch response.result {
             case .success(let appOpenResponse):
                 guard let appOpenResponseData = appOpenResponse.data else { return }
-                self.translationsManager?.localizations = appOpenResponseData.localize
+                self.translationsManager?.updateTranslations()
                 #if os(iOS) || os(tvOS)
                 
                 if !self.alertManager.alreadyShowingAlert {
@@ -298,14 +307,14 @@ public extension NStack {
     /// Locally stored list of languages
     private(set) var languages: [Language]? {
         get {
-            return Constants.persistentStore.serializableForKey(Constants.CacheKeys.languanges)
+            return userDefaults.codable(forKey: Constants.CacheKeys.languanges)
         }
         set {
             guard let newValue = newValue else {
-                Constants.persistentStore.deleteSerializableForKey(Constants.CacheKeys.languanges, purgeMemoryCache: true)
+                userDefaults.removeObject(forKey: Constants.CacheKeys.languanges)
                 return
             }
-            Constants.persistentStore.setSerializable(newValue, forKey: Constants.CacheKeys.languanges)
+            userDefaults.setCodable(newValue, forKey: Constants.CacheKeys.languanges)
         }
     }
     
@@ -409,7 +418,7 @@ public extension NStack {
         }
     }
     
-    func fetchStaticResponse<T:Swift.Codable>(atSlug slug: String, completion: @escaping ((NStack.Result<T>) -> Void)) {
+    func fetchStaticResponse<T:Swift.Codable>(atSlug slug: String, completion: @escaping ((NStack.NStackResult<T>) -> Void)) {
         connectionManager.fetchStaticResponse(atSlug: slug, completion: completion)
     }
     
@@ -444,7 +453,7 @@ public extension NStack {
     ///     unwrapper: Optional unwrapper where to look for the required data, default is in the data object
     ///     key: Optional string if only one property or object is required, default is nil
     ///     completion: Completion block with the response as a any object if successful or error if not
-    func fetchCollectionResponse<T:Swift.Codable>(for id: Int, maxNumberOfEntries: Int = 250, completion: @escaping ((NStack.Result<T>) -> Void)) {
+    func fetchCollectionResponse<T:Swift.Codable>(for id: Int, maxNumberOfEntries: Int = 250, completion: @escaping ((NStack.NStackResult<T>) -> Void)) {
         connectionManager.fetchCollection(id, maxNumberOfEntries: maxNumberOfEntries, completion: completion)
     }
 }

@@ -39,7 +39,7 @@ class ConnectionManagerTests: XCTestCase {
 
     func testInvalidateEmail() {
         connectionManager.validateEmail("veryWrongEmail") { (response) in
-            XCTAssertTrue(response.result.isFailure)
+            XCTAssertNotNil(response.error)
         }
     }
     

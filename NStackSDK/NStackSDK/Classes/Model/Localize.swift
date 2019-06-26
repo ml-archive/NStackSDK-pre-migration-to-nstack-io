@@ -8,31 +8,23 @@
 
 import Foundation
 import Serpent
+import TranslationManager
 
-public struct Localize {
-    var id = 0
-    var url = ""
-    var lastUpdatedAt = Date()
-    var shouldUpdate: Bool = false
-    var language: Language?
-}
-
-extension Localize: Serializable {
-    public init(dictionary: NSDictionary?) {
-        id            <== (self, dictionary, "id")
-        url           <== (self, dictionary, "url")
-        lastUpdatedAt <== (self, dictionary, "last_updated_at")
-        shouldUpdate  <== (self, dictionary, "should_update")
-        language      <== (self, dictionary, "language")
+public struct Localization: LocalizationModel {
+    public var localeIdentifier: String {
+        return language.acceptLanguage
     }
     
-    public func encodableRepresentation() -> NSCoding {
-        let dict = NSMutableDictionary()
-        (dict, "id")              <== id
-        (dict, "url")             <== url
-        (dict, "last_updated_at") <== lastUpdatedAt
-        (dict, "should_update")   <== shouldUpdate
-        (dict, "language")        <== language
-        return dict
+    public var id: Int
+    public var url: String
+    
+    public var lastUpdatedAt: String
+    public var shouldUpdate: Bool
+    public var language: Language
+    
+    enum CodingKeys: String, CodingKey {
+        case id, url, language
+        case lastUpdatedAt = "last_updated_at"
+        case shouldUpdate = "should_update"
     }
 }

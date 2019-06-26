@@ -28,17 +28,17 @@ protocol UpdatesRepository {
 
 // MARK: - Translations -
 
-protocol TranslationsRepository {
-    func fetchTranslations(acceptLanguage: String, completion: @escaping Completion<TranslationsResponse>)
-    func fetchLocalizeTranslations(localize: Localize,
-                                   acceptLanguage: String?,
-                                   completion: @escaping Completion<TranslationsResponse>)
-    func fetchCurrentLanguage(acceptLanguage: String, completion: @escaping Completion<Language>)
-    func fetchAvailableLanguages(completion:  @escaping Completion<[Language]>)
-    func fetchPreferredLanguages() -> [String]
-    func fetchBundles() -> [Bundle]
-    func fetchCurrentPhoneLanguage() -> String?
-}
+//protocol TranslationRepository {
+//    func fetchTranslations(acceptLanguage: String, completion: @escaping Completion<TranslationsResponse>)
+//    func fetchLocalizeTranslations(localize: Localize,
+//                                   acceptLanguage: String?,
+//                                   completion: @escaping Completion<TranslationsResponse>)
+//    func fetchCurrentLanguage(acceptLanguage: String, completion: @escaping Completion<Language>)
+//    func fetchAvailableLanguages(completion:  @escaping Completion<[Language]>)
+//    func fetchPreferredLanguages() -> [String]
+//    func fetchBundles() -> [Bundle]
+//    func fetchCurrentPhoneLanguage() -> String?
+//}
 
 // MARK: - Geography -
 
@@ -62,13 +62,13 @@ protocol ValidationRepository {
 protocol ContentRepository {
     func fetchContent(_ id: Int, completion:  @escaping Completion<Any>)
     func fetchContent(_ slug: String, completion: @escaping Completion<Any>)
-    func fetchStaticResponse<T:Swift.Codable>(atSlug slug: String, completion: @escaping ((NStack.Result<T>) -> Void)) 
+    func fetchStaticResponse<T:Swift.Codable>(atSlug slug: String, completion: @escaping ((NStack.NStackResult<T>) -> Void))
 }
 
 // MARK: - Collection -
 
 protocol ColletionRepository {
-    func fetchCollection<T: Swift.Codable>(_ id: Int, maxNumberOfEntries: Int, completion: @escaping ((NStack.Result<T>) -> Void))
+    func fetchCollection<T: Swift.Codable>(_ id: Int, maxNumberOfEntries: Int, completion: @escaping ((NStack.NStackResult<T>) -> Void))
 }
 
 // MARK: - Versions -

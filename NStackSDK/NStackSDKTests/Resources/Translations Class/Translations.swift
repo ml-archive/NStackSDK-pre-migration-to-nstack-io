@@ -28,44 +28,45 @@
 import Foundation
 import Serpent
 import NStackSDK
+import TranslationManager
 
-public var tr: Translations {
-    get {
-        guard let manager = NStack.sharedInstance.translationsManager else {
-            return Translations()
-        }
-        return manager.translations()
-    }
-}
-
-public struct Translations: Translatable {
-    var defaultSection = DefaultSection() //<-default
-
-    public struct DefaultSection {
-        var successKey = ""
-    }
-}
-
-extension Translations: Serializable {
-    public init(dictionary: NSDictionary?) {
-        defaultSection <== (self, dictionary, "default")
-    }
-
-    public func encodableRepresentation() -> NSCoding {
-        let dict = NSMutableDictionary()
-        (dict, "default") <== defaultSection
-        return dict
-    }
-}
-
-extension Translations.DefaultSection: Serializable {
-    public init(dictionary: NSDictionary?) {
-        successKey <== (self, dictionary, "successKey")
-    }
-
-    public func encodableRepresentation() -> NSCoding {
-        let dict = NSMutableDictionary()
-        (dict, "successKey") <== successKey
-        return dict
-    }
-}
+//public var tr: Translations {
+//    get {
+//        guard let manager = NStack.sharedInstance.translationsManager else {
+//            return Translations()
+//        }
+//        return manager.translations()
+//    }
+//}
+//
+//public struct Translations: Translatable {
+//    var defaultSection = DefaultSection() //<-default
+//
+//    public struct DefaultSection {
+//        var successKey = ""
+//    }
+//}
+//
+//extension Translations: Serializable {
+//    public init(dictionary: NSDictionary?) {
+//        defaultSection <== (self, dictionary, "default")
+//    }
+//
+//    public func encodableRepresentation() -> NSCoding {
+//        let dict = NSMutableDictionary()
+//        (dict, "default") <== defaultSection
+//        return dict
+//    }
+//}
+//
+//extension Translations.DefaultSection: Serializable {
+//    public init(dictionary: NSDictionary?) {
+//        successKey <== (self, dictionary, "successKey")
+//    }
+//
+//    public func encodableRepresentation() -> NSCoding {
+//        let dict = NSMutableDictionary()
+//        (dict, "successKey") <== successKey
+//        return dict
+//    }
+//}

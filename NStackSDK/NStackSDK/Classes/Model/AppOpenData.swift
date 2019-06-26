@@ -16,7 +16,7 @@ struct AppOpenData {
     var update: Update?
     var rateReminder: RateReminder?
     
-    var localize: [Localize] = []
+    var localize: [Localization] = []
     var deviceMapping: [String: String] = [:] // <-ios_devices
     
     var createdAt = Date()

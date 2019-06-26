@@ -10,10 +10,11 @@
 import XCTest
 import Serpent
 import Alamofire
+import TranslationManager
 @testable import NStackSDK
 
 let testConfiguration: () -> Configuration = {
-    var conf = Configuration(plistName: "NStack", translationsClass: Translations.self)
+    var conf = Configuration(plistName: "NStack", translationsClass: nil)
     conf.verboseMode = true
     conf.updateOptions = []
     conf.versionOverride = "2.0"
@@ -130,7 +131,7 @@ class NStackTests: XCTestCase {
         
         let exp = expectation(description: "Content received")
 
-        let completion: (NStack.Result<Person>) -> Void = { result in
+        let completion: (NStack.NStackResult<Person>) -> Void = { result in
             switch result {
             case .success(let person):
                 print(person)
@@ -155,7 +156,7 @@ class NStackTests: XCTestCase {
         
         let exp = expectation(description: "Content received")
         
-        let completion: (NStack.Result<[Person]>) -> Void = { result in
+        let completion: (NStack.NStackResult<[Person]>) -> Void = { result in
             switch result {
             case .success(let person):
                 print(person)
@@ -259,7 +260,7 @@ class NStackTests: XCTestCase {
             let name: String
         }
         let exp = expectation(description: "Collection received")
-        let completion: (NStack.Result<Country>) -> Void = { result in
+        let completion: (NStack.NStackResult<Country>) -> Void = { result in
             switch result {
             case .success(let country):
                 print(country)

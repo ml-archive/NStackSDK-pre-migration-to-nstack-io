@@ -8,6 +8,7 @@
 
 import Foundation
 import Serpent
+import TranslationManager
 
 struct LanguageData {
     var language: Language?
